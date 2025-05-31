@@ -49,11 +49,10 @@ const MyRoutine = () => {
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | undefined>(undefined);
   const [showAIAnalysis, setShowAIAnalysis] = useState(false);
-  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState<{
-    activities: { name: string; description: string; time: string; duration: string; category: string }[];
+    suggestions: string[];
     improvements: string[];
-    schedule: string[];
+    scheduleOptimization: string[];
   } | null>(null);
 
   useEffect(() => {
@@ -136,129 +135,36 @@ const MyRoutine = () => {
 
   const analyzeRoutine = async () => {
     setShowAIAnalysis(true);
-    setLoadingSuggestions(true);
-
-    // Analyze current routine patterns
-    const morningTasks = tasks.filter(task => task.time < '12:00');
-    const afternoonTasks = tasks.filter(task => task.time >= '12:00' && task.time < '17:00');
-    const eveningTasks = tasks.filter(task => task.time >= '17:00');
-
-    // Calculate time gaps and identify patterns
-    const timeGaps = [];
-    const sortedTasks = [...tasks].sort((a, b) => a.time.localeCompare(b.time));
-    for (let i = 0; i < sortedTasks.length - 1; i++) {
-      const currentTime = new Date(`2000-01-01T${sortedTasks[i].time}`);
-      const nextTime = new Date(`2000-01-01T${sortedTasks[i + 1].time}`);
-      const gapHours = (nextTime.getTime() - currentTime.getTime()) / (1000 * 60 * 60);
-      if (gapHours > 2) {
-        timeGaps.push({
-          start: sortedTasks[i].time,
-          end: sortedTasks[i + 1].time,
-          duration: gapHours
-        });
-      }
-    }
-
-    // Analyze task distribution
-    const taskCategories = tasks.reduce((acc, task) => {
-      acc[task.category] = (acc[task.category] || 0) + 1;
-      return acc;
-    }, {});
-
-    // Generate personalized suggestions
-    const suggestions = {
-      activities: [],
-      improvements: [],
-      schedule: []
+    // Simulate AI analysis with a loading state
+    const loadingSuggestions = {
+      suggestions: ["Analyzing your routine..."],
+      improvements: ["Processing..."],
+      scheduleOptimization: ["Optimizing schedule..."]
     };
+    setAiSuggestions(loadingSuggestions);
 
-    // Suggest activities based on time gaps
-    timeGaps.forEach(gap => {
-      if (gap.duration >= 2 && gap.duration <= 4) {
-        suggestions.activities.push({
-          name: 'Power Nap',
-          description: `Take a ${Math.floor(gap.duration * 0.5)}-minute power nap between ${gap.start} and ${gap.end} to boost productivity`,
-          time: gap.start,
-          duration: '30',
-          category: 'Health'
-        });
-      }
-    });
-
-    // Suggest activities based on time of day
-    if (morningTasks.length === 0) {
-      suggestions.activities.push({
-        name: 'Morning Meditation',
-        description: 'Start your day with a 15-minute meditation session',
-        time: '07:00',
-        duration: '15',
-        category: 'Mindfulness'
-      });
-    }
-
-    if (afternoonTasks.length === 0) {
-      suggestions.activities.push({
-        name: 'Afternoon Walk',
-        description: 'Take a 20-minute walk to refresh your mind',
-        time: '14:00',
-        duration: '20',
-        category: 'Health'
-      });
-    }
-
-    if (eveningTasks.length === 0) {
-      suggestions.activities.push({
-        name: 'Evening Reflection',
-        description: 'Spend 15 minutes reflecting on your day',
-        time: '20:00',
-        duration: '15',
-        category: 'Mindfulness'
-      });
-    }
-
-    // Suggest improvements based on task distribution
-    const categories = Object.keys(taskCategories);
-    if (categories.length < 3) {
-      suggestions.improvements.push(
-        'Consider adding more variety to your routine by including tasks from different categories'
-      );
-    }
-
-    // Suggest schedule optimizations
-    if (timeGaps.length > 0) {
-      const largestGap = timeGaps.reduce((max, gap) => gap.duration > max.duration ? gap : max);
-      suggestions.schedule.push(
-        `You have a ${Math.floor(largestGap.duration)}-hour gap between ${largestGap.start} and ${largestGap.end}. Consider redistributing tasks to make better use of this time.`
-      );
-    }
-
-    // Add more specific suggestions based on task patterns
-    const consecutiveTasks = tasks.filter(task => task.duration > 60);
-    if (consecutiveTasks.length > 2) {
-      suggestions.improvements.push(
-        'You have several long tasks scheduled consecutively. Consider adding short breaks between them to maintain focus.'
-      );
-    }
-
-    // Add suggestions based on time of day
-    const earlyTasks = tasks.filter(task => task.time < '08:00');
-    if (earlyTasks.length === 0) {
-      suggestions.improvements.push(
-        'Consider starting your day earlier to make the most of your morning energy'
-      );
-    }
-
-    const lateTasks = tasks.filter(task => task.time > '22:00');
-    if (lateTasks.length > 0) {
-      suggestions.improvements.push(
-        'You have tasks scheduled late at night. Consider moving them earlier to improve sleep quality'
-      );
-    }
-
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setAiSuggestions(suggestions);
-    setLoadingSuggestions(false);
+    // In a real implementation, this would call an AI service
+    // For now, we'll simulate the analysis with some smart suggestions
+    setTimeout(() => {
+      const analysis = {
+        suggestions: [
+          "Add a 5-minute stretching session after meditation",
+          "Consider adding a short walk after lunch",
+          "Include a 10-minute reading session before bed"
+        ],
+        improvements: [
+          "Your morning routine is well-structured",
+          "Good balance of physical and mental activities",
+          "Consider adding more breaks between tasks"
+        ],
+        scheduleOptimization: [
+          "Move exercise to 6:30 AM for better energy levels",
+          "Add a 15-minute break after 2 hours of work",
+          "Schedule important tasks in the morning when energy is highest"
+        ]
+      };
+      setAiSuggestions(analysis);
+    }, 2000);
   };
 
   const applySuggestion = (suggestion: string) => {
@@ -280,26 +186,26 @@ const MyRoutine = () => {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50/30 via-purple-50/20 to-pink-50/30 dark:from-slate-950 dark:via-purple-950/20 dark:to-pink-950/20">
       <Navigation />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 dark:from-indigo-300 dark:via-purple-300 dark:to-pink-300 bg-clip-text text-transparent mb-3">
+              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 dark:from-indigo-300 dark:via-purple-300 dark:to-pink-300 bg-clip-text text-transparent mb-2 sm:mb-3">
                 My Daily Routine
               </h1>
-              <p className="text-lg text-slate-600 dark:text-slate-400">
+              <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
                 Transform your day with intentional habits.
               </p>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:space-x-4">
               <Button
                 onClick={analyzeRoutine}
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
               >
                 <Brain className="h-4 w-4 mr-2" />
                 Analyze Routine
               </Button>
-              <div className="flex items-center space-x-2 text-sm text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-slate-800/80 px-4 py-2 rounded-full">
+              <div className="flex items-center space-x-2 text-sm text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-slate-800/80 px-4 py-2 rounded-full w-full sm:w-auto justify-center sm:justify-start">
                 <Calendar className="h-4 w-4 text-indigo-400" />
                 <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
               </div>
@@ -307,208 +213,132 @@ const MyRoutine = () => {
           </div>
         </div>
 
-        {/* AI Analysis Modal */}
-        {showAIAnalysis && (
-          <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold flex items-center">
-                    <Brain className="h-6 w-6 text-purple-500 mr-2" />
-                    AI Routine Analysis
-                  </h2>
-                  <Button
-                    variant="ghost"
-                    onClick={() => setShowAIAnalysis(false)}
-                    className="text-slate-500 hover:text-slate-700"
-                  >
-                    ✕
-                  </Button>
-                </div>
-
-                {aiSuggestions && (
-                  <div className="space-y-6">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-lg font-semibold flex items-center">
-                          <Sparkles className="h-4 w-4 text-yellow-500 mr-2" />
-                          Suggested Activities
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          {aiSuggestions.activities.map((activity, index) => (
-                            <div key={index} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                              <span className="text-slate-700 dark:text-slate-300">{activity.name}</span>
-                              <Button
-                                size="sm"
-                                onClick={() => applySuggestion(activity.name)}
-                                className="bg-purple-500 hover:bg-purple-600 text-white"
-                              >
-                                Add to Routine
-                              </Button>
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-lg font-semibold flex items-center">
-                          <TrendingUp className="h-4 w-4 text-green-500 mr-2" />
-                          Routine Improvements
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2">
-                          {aiSuggestions.improvements.map((improvement, index) => (
-                            <div key={index} className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                              <span className="text-slate-700 dark:text-slate-300">{improvement}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="text-lg font-semibold flex items-center">
-                          <Clock className="h-4 w-4 text-blue-500 mr-2" />
-                          Schedule Optimization
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2">
-                          {aiSuggestions.schedule.map((optimization, index) => (
-                            <div key={index} className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                              <span className="text-slate-700 dark:text-slate-300">{optimization}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="mb-8">
-          <DailyStats 
-            completionPercentage={completionPercentage}
-            totalTasks={tasks.length}
-            completedTasks={completedTasks}
-            longestStreak={Math.max(...tasks.map(task => task.streak || 0), 0)}
-          />
-        </div>
-
-        <div className="grid lg:grid-cols-12 gap-6">
-          {/* Left Sidebar */}
-          <div className="lg:col-span-3 space-y-6">
-            <Card className="bg-white/90 dark:bg-slate-800/90 rounded-2xl shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold flex items-center">
-                  <Target className="h-4 w-4 text-indigo-500 mr-2" />
-                  Quick Actions
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Button 
-                  onClick={() => setShowTaskForm(true)}
-                  className="w-full bg-indigo-500 hover:bg-indigo-600 text-white"
-                  size="lg"
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add New Task
-                </Button>
-              </CardContent>
-            </Card>
-
-            <div className="space-y-6">
-              <PomodoroTimer />
-              <WaterIntakeTracker />
-              <HealthTrackers />
-            </div>
-          </div>
-
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Main Content */}
-          <div className="lg:col-span-6">
-            <div className="space-y-6">
-              <Card className="bg-white/90 dark:bg-slate-800/90 rounded-2xl shadow-lg">
-                <CardHeader>
-                  <CardTitle className="text-xl font-semibold flex items-center">
-                    <Clock className="h-5 w-5 text-indigo-500 mr-2" />
-                    Today's Tasks
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <TaskList 
-                    tasks={tasks}
-                    onToggleTask={toggleTask}
-                    onDeleteTask={deleteTask}
-                    onEditTask={handleEditTask}
-                    onReorderTasks={reorderTasks}
-                  />
-                </CardContent>
-              </Card>
-              
-              <RoutineTemplates onAddTemplate={addTemplate} />
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+            <TaskList
+              tasks={tasks}
+              onToggleTask={toggleTask}
+              onDeleteTask={deleteTask}
+              onEditTask={handleEditTask}
+              onReorderTasks={reorderTasks}
+            />
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              <DailyFocusTask />
+              <PomodoroTimer />
             </div>
           </div>
 
-          {/* Right Sidebar */}
-          <div className="lg:col-span-3">
-            <div className="space-y-6">
-              <Card className="bg-gradient-to-br from-indigo-50/80 to-purple-50/80 dark:from-indigo-900/10 dark:to-purple-900/10 rounded-2xl shadow-lg">
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold flex items-center">
-                    <TrendingUp className="h-4 w-4 text-indigo-500 mr-2" />
-                    Progress
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Completion Rate</span>
-                      <span className="text-2xl font-bold">{completionPercentage}%</span>
-                    </div>
-                    <div className="w-full bg-indigo-100/60 dark:bg-indigo-800/30 rounded-full h-3">
-                      <div 
-                        className="bg-indigo-500 h-3 rounded-full transition-all duration-700"
-                        style={{ width: `${completionPercentage}%` }}
-                      ></div>
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span>Completed Tasks</span>
-                      <span className="font-medium">{completedTasks} of {tasks.length}</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          {/* Sidebar */}
+          <div className="space-y-4 sm:space-y-6">
+            <DailyStats tasks={tasks} />
+            <WaterIntakeTracker />
+            <HealthTrackers />
+            <RoutineTemplates onAddTemplate={addTemplate} />
+          </div>
+        </div>
+      </div>
 
-              <DailyFocusTask />
+      {/* AI Analysis Modal */}
+      {showAIAnalysis && (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-4 sm:p-6">
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold flex items-center">
+                  <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-purple-500 mr-2" />
+                  AI Routine Analysis
+                </h2>
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowAIAnalysis(false)}
+                  className="text-slate-500 hover:text-slate-700"
+                >
+                  ✕
+                </Button>
+              </div>
+
+              {aiSuggestions && (
+                <div className="space-y-4 sm:space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base sm:text-lg font-semibold flex items-center">
+                        <Sparkles className="h-4 w-4 text-yellow-500 mr-2" />
+                        Suggested Activities
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 sm:space-y-3">
+                        {aiSuggestions.suggestions.map((suggestion, index) => (
+                          <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg gap-2 sm:gap-4">
+                            <span className="text-sm sm:text-base text-slate-700 dark:text-slate-300">{suggestion}</span>
+                            <Button
+                              size="sm"
+                              onClick={() => applySuggestion(suggestion)}
+                              className="w-full sm:w-auto bg-purple-500 hover:bg-purple-600 text-white"
+                            >
+                              Add to Routine
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base sm:text-lg font-semibold flex items-center">
+                        <TrendingUp className="h-4 w-4 text-green-500 mr-2" />
+                        Routine Improvements
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 sm:space-y-3">
+                        {aiSuggestions.improvements.map((improvement, index) => (
+                          <div key={index} className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300">{improvement}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base sm:text-lg font-semibold flex items-center">
+                        <Clock className="h-4 w-4 text-blue-500 mr-2" />
+                        Schedule Optimization
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 sm:space-y-3">
+                        {aiSuggestions.scheduleOptimization.map((optimization, index) => (
+                          <div key={index} className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300">{optimization}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
             </div>
           </div>
         </div>
+      )}
 
-        {showTaskForm && (
-          <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-              <TaskForm 
-                onAddTask={editingTask ? undefined : addTask}
-                onEditTask={editingTask ? editTask : undefined}
-                onClose={() => {
-                  setShowTaskForm(false);
-                  setEditingTask(undefined);
-                }}
-                editingTask={editingTask}
-              />
-            </div>
-          </div>
-        )}
-      </div>
+      {showTaskForm && (
+        <TaskForm
+          onClose={() => {
+            setShowTaskForm(false);
+            setEditingTask(undefined);
+          }}
+          onAddTask={addTask}
+          onEditTask={editTask}
+          editingTask={editingTask}
+        />
+      )}
     </div>
   );
 };

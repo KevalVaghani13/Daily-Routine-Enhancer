@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -190,34 +189,41 @@ const RoutineTemplates: React.FC<RoutineTemplatesProps> = ({ onAddTemplate }) =>
   };
 
   return (
-    <Card className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border-0 dark:shadow-slate-900/50">
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold text-slate-800 dark:text-slate-100 flex items-center">
-          <Sparkles className="mr-2 h-5 w-5 text-amber-500 dark:text-amber-400" />
+    <Card className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl shadow-lg border-0 dark:shadow-slate-900/50">
+      <CardHeader className="px-4 sm:px-6">
+        <CardTitle className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-100 flex items-center">
+          <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-amber-500 dark:text-amber-400" />
           Routine Templates
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 px-4 sm:px-6">
         {/* Pre-made Templates */}
         <div>
           <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Quick Templates</h3>
-          <div className="space-y-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {predefinedTemplates.map((template) => (
-              <div key={template.id} className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+              <div 
+                key={template.id} 
+                className="p-3 sm:p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/70 transition-colors duration-200"
+              >
                 <div className="flex items-center justify-between">
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-2">
-                      <span className="text-lg">{template.icon}</span>
-                      <span className="font-medium text-slate-800 dark:text-slate-100">{template.name}</span>
+                      <span className="text-lg flex-shrink-0">{template.icon}</span>
+                      <span className="font-medium text-slate-800 dark:text-slate-100 truncate text-sm sm:text-base">
+                        {template.name}
+                      </span>
                     </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">{template.description}</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 line-clamp-2">
+                      {template.description}
+                    </p>
                   </div>
                   <Button
                     onClick={() => addTemplate(template)}
                     size="sm"
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    className="ml-2 sm:ml-4 flex-shrink-0 bg-blue-600 hover:bg-blue-700 text-white h-7 sm:h-8 w-7 sm:w-8 p-0"
                   >
-                    <Plus className="h-3 w-3" />
+                    <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
                   </Button>
                 </div>
               </div>
@@ -228,7 +234,7 @@ const RoutineTemplates: React.FC<RoutineTemplatesProps> = ({ onAddTemplate }) =>
         {/* Activity Categories */}
         <div>
           <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Browse by Category</h3>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
             {Object.entries(routineActivities).map(([categoryName, category]) => {
               const IconComponent = category.icon;
               return (
@@ -236,10 +242,12 @@ const RoutineTemplates: React.FC<RoutineTemplatesProps> = ({ onAddTemplate }) =>
                   key={categoryName}
                   variant={selectedCategory === categoryName ? "default" : "outline"}
                   onClick={() => setSelectedCategory(selectedCategory === categoryName ? null : categoryName)}
-                  className="h-auto p-3 flex flex-col items-center space-y-1"
+                  className="h-auto p-2 sm:p-3 flex flex-col items-center space-y-1"
                 >
-                  <IconComponent className="h-4 w-4" />
-                  <span className="text-xs">{categoryName}</span>
+                  <IconComponent className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="text-xs truncate w-full text-center">
+                    {categoryName}
+                  </span>
                 </Button>
               );
             })}
@@ -249,7 +257,7 @@ const RoutineTemplates: React.FC<RoutineTemplatesProps> = ({ onAddTemplate }) =>
         {/* Selected Category Activities */}
         {selectedCategory && (
           <div>
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
               <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 {selectedCategory} Activities
               </h3>
@@ -257,22 +265,22 @@ const RoutineTemplates: React.FC<RoutineTemplatesProps> = ({ onAddTemplate }) =>
                 <Button
                   onClick={addCustomRoutine}
                   size="sm"
-                  className="bg-green-600 hover:bg-green-700 text-white"
+                  className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto"
                 >
                   Add Selected ({selectedActivities.length})
                 </Button>
               )}
             </div>
-            <div className="space-y-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {routineActivities[selectedCategory as keyof typeof routineActivities].activities.map((activity) => (
                 <div
                   key={activity.name}
-                  className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg"
+                  className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700/70 transition-colors duration-200"
                 >
-                  <div className="flex items-center space-x-3">
-                    <span className="text-lg">{activity.icon}</span>
-                    <div>
-                      <span className="text-sm font-medium text-slate-800 dark:text-slate-100">
+                  <div className="flex items-center space-x-3 min-w-0">
+                    <span className="text-lg flex-shrink-0">{activity.icon}</span>
+                    <div className="min-w-0">
+                      <span className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate block">
                         {activity.name}
                       </span>
                       <div className="flex items-center space-x-2 mt-1">
@@ -285,16 +293,14 @@ const RoutineTemplates: React.FC<RoutineTemplatesProps> = ({ onAddTemplate }) =>
                       </div>
                     </div>
                   </div>
-                  <div className="flex space-x-1">
-                    <Button
-                      onClick={() => addActivityToRoutine(activity.name)}
-                      size="sm"
-                      variant="outline"
-                      className="h-7 px-2"
-                    >
-                      <Plus className="h-3 w-3" />
-                    </Button>
-                  </div>
+                  <Button
+                    onClick={() => addActivityToRoutine(activity.name)}
+                    size="sm"
+                    variant="outline"
+                    className="ml-2 flex-shrink-0 h-7 w-7 sm:h-8 sm:w-8 p-0"
+                  >
+                    <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+                  </Button>
                 </div>
               ))}
             </div>

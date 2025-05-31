@@ -35,15 +35,21 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
   };
 
   return (
-    <div className="w-full max-w-md space-y-6">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold">Welcome Back</h2>
-        <p className="text-slate-500 dark:text-slate-400">Sign in to your account</p>
+    <div className="w-full max-w-md mx-auto p-4 sm:p-6 md:p-8 space-y-6 animate-fadeIn">
+      <div className="text-center space-y-2">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          Welcome Back
+        </h2>
+        <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base">
+          Sign in to your account
+        </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email" className="text-sm sm:text-base font-medium">
+            Email
+          </Label>
           <Input
             id="email"
             type="email"
@@ -51,11 +57,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            className="h-10 sm:h-11 text-sm sm:text-base transition-all duration-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password" className="text-sm sm:text-base font-medium">
+            Password
+          </Label>
           <Input
             id="password"
             type="password"
@@ -63,27 +72,37 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className="h-10 sm:h-11 text-sm sm:text-base transition-all duration-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
         </div>
 
         {error && (
-          <div className="text-red-500 text-sm text-center">{error}</div>
+          <div className="text-red-500 text-sm text-center p-3 bg-red-50 dark:bg-red-900/20 rounded-md animate-shake">
+            {error}
+          </div>
         )}
 
         <Button
           type="submit"
-          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white"
+          className="w-full h-10 sm:h-11 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-sm sm:text-base font-medium transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
           disabled={isLoading}
         >
-          {isLoading ? 'Signing in...' : 'Sign In'}
+          {isLoading ? (
+            <div className="flex items-center justify-center space-x-2">
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              <span>Signing in...</span>
+            </div>
+          ) : (
+            'Sign In'
+          )}
         </Button>
       </form>
 
-      <div className="text-center text-sm">
+      <div className="text-center text-sm sm:text-base">
         <span className="text-slate-500 dark:text-slate-400">Don't have an account? </span>
         <button
           onClick={onSwitchToRegister}
-          className="text-indigo-500 hover:text-indigo-600 font-medium"
+          className="text-indigo-500 hover:text-indigo-600 font-medium transition-colors duration-200 hover:underline"
         >
           Sign up
         </button>

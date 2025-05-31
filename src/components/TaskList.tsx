@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -44,20 +43,20 @@ const TaskList: React.FC<TaskListProps> = ({
   return (
     <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200/50 dark:border-slate-700/50 hover:shadow-xl transition-all duration-300">
       <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xl font-semibold text-slate-800 dark:text-slate-100 flex items-center">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <CardTitle className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-100 flex items-center">
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg mr-3">
-              <CheckCircle2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
             </div>
             Today's Tasks
           </CardTitle>
-          <div className="text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+          <div className="text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full self-start sm:self-auto">
             {tasks.length} tasks
           </div>
         </div>
         
         {tasks.length > 0 && (
-          <div className="mt-6 space-y-3">
+          <div className="mt-4 sm:mt-6 space-y-2 sm:space-y-3">
             <div className="flex justify-between text-sm text-slate-600 dark:text-slate-300">
               <span className="font-medium">Daily Progress</span>
               <span className="font-semibold">{tasks.filter(t => t.completed).length}/{tasks.length} completed</span>
@@ -65,7 +64,7 @@ const TaskList: React.FC<TaskListProps> = ({
             <div className="relative">
               <Progress 
                 value={tasks.length > 0 ? (tasks.filter(t => t.completed).length / tasks.length) * 100 : 0}
-                className="h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden"
+                className="h-2 sm:h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-full"></div>
             </div>
@@ -78,11 +77,11 @@ const TaskList: React.FC<TaskListProps> = ({
       
       <CardContent>
         {tasks.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl flex items-center justify-center">
-              <CheckCircle2 className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+          <div className="text-center py-8 sm:py-12">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl flex items-center justify-center">
+              <CheckCircle2 className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 dark:text-blue-400" />
             </div>
-            <p className="text-slate-500 dark:text-slate-400 font-medium">
+            <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 font-medium">
               No tasks yet. Add your first task to get started!
             </p>
             <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
@@ -90,44 +89,44 @@ const TaskList: React.FC<TaskListProps> = ({
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {sortedTasks.map((task, index) => (
               <div
                 key={task.id}
-                className={`group p-4 rounded-xl border-2 transition-all duration-300 hover:shadow-md ${
+                className={`group p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 hover:shadow-md ${
                   task.completed
                     ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200 dark:from-green-900/20 dark:to-emerald-900/20 dark:border-green-700/50'
                     : 'bg-white dark:bg-slate-800/50 border-slate-200 dark:border-slate-600/50 hover:border-blue-300 dark:hover:border-blue-600'
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4 flex-1">
-                    <div className="cursor-move text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-start sm:items-center justify-between gap-3 sm:gap-4">
+                  <div className="flex items-start sm:items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
+                    <div className="cursor-move text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity mt-1 sm:mt-0">
                       <GripVertical className="w-4 h-4" />
                     </div>
                     
                     <button
                       onClick={() => onToggleTask(task.id)}
-                      className={`relative w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+                      className={`relative w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 hover:scale-110 mt-1 sm:mt-0 ${
                         task.completed
                           ? 'bg-green-500 border-green-500 dark:bg-green-600 dark:border-green-600 shadow-md'
                           : 'border-slate-300 hover:border-blue-500 dark:border-slate-500 dark:hover:border-blue-400 hover:shadow-md'
                       }`}
                     >
                       {task.completed && (
-                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                       )}
                     </button>
                     
-                    <div className="text-2xl">{task.icon}</div>
+                    <div className="text-xl sm:text-2xl">{task.icon}</div>
                     
                     <div className="flex-1 min-w-0">
-                      <h3 className={`font-semibold text-base ${task.completed ? 'line-through text-slate-500 dark:text-slate-400' : 'text-slate-800 dark:text-slate-100'}`}>
+                      <h3 className={`font-semibold text-sm sm:text-base ${task.completed ? 'line-through text-slate-500 dark:text-slate-400' : 'text-slate-800 dark:text-slate-100'}`}>
                         {task.name}
                       </h3>
-                      <div className="flex items-center space-x-3 text-sm text-slate-600 dark:text-slate-300 mt-2 flex-wrap gap-2">
+                      <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1 sm:mt-2">
                         <span className="flex items-center bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-md">
                           <Clock className="w-3 h-3 mr-1 text-slate-500 dark:text-slate-400" />
                           {task.time}
@@ -172,7 +171,7 @@ const TaskList: React.FC<TaskListProps> = ({
                       onClick={() => onEditTask(task)}
                       className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/20 border-slate-300 dark:border-slate-600 rounded-lg"
                     >
-                      <Edit className="w-4 h-4" />
+                      <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                     </Button>
                     <Button
                       variant="outline"
@@ -180,14 +179,14 @@ const TaskList: React.FC<TaskListProps> = ({
                       onClick={() => onDeleteTask(task.id)}
                       className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-900/20 border-slate-300 dark:border-slate-600 rounded-lg"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                     </Button>
                   </div>
                 </div>
                 
                 {task.notes && (
-                  <div className="mt-4 pl-14">
-                    <p className="text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700/50 p-3 rounded-lg border border-slate-200 dark:border-slate-600">
+                  <div className="mt-3 sm:mt-4 pl-12 sm:pl-14">
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-700/50 p-2 sm:p-3 rounded-lg border border-slate-200 dark:border-slate-600">
                       💭 {task.notes}
                     </p>
                   </div>
